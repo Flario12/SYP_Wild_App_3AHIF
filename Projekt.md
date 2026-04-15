@@ -512,3 +512,12 @@ Abhängigkeit
 - Haftungsausschluss  
 - Zertifizierungen prüfen  
 
+# Stakeholderanalyse
+# Stakeholderanalyse
+
+| Stakeholder        | Einfluss | Interesse | Rolle                     |
+|--------------------|----------|-----------|---------------------------|
+| Gründer            | hoch     | hoch      | Entscheidungsträger       |
+| User               | mittel   | hoch      | Nutzen die App            |
+| Lehrer (Herr Fritz)| mittel   | mittel    | Feedback / Bewertung      |
+| Konkurrenz         | gering   | mittel    | Marktvergleich            |
