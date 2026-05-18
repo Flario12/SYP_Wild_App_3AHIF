@@ -1,0 +1,61 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\danie\\Documents\\Syp_Wild_app\\SYP_Wild_App_3AHIF\\Skript\\WildApp\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2DCFBFEB-D26B-4C07-861E-08CC4F7189AF}|WildApp\\WildApp.csproj|c:\\users\\danie\\documents\\syp_wild_app\\syp_wild_app_3ahif\\skript\\wildapp\\wildapp\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{2DCFBFEB-D26B-4C07-861E-08CC4F7189AF}|WildApp\\WildApp.csproj|solutionrelative:wildapp\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2DCFBFEB-D26B-4C07-861E-08CC4F7189AF}|WildApp\\WildApp.csproj|c:\\users\\danie\\documents\\syp_wild_app\\syp_wild_app_3ahif\\skript\\wildapp\\wildapp\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2DCFBFEB-D26B-4C07-861E-08CC4F7189AF}|WildApp\\WildApp.csproj|solutionrelative:wildapp\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Documents\\Syp_Wild_app\\SYP_Wild_App_3AHIF\\Skript\\WildApp\\WildApp\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "WildApp\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\danie\\Documents\\Syp_Wild_app\\SYP_Wild_App_3AHIF\\Skript\\WildApp\\WildApp\\MainWindow.xaml",
+              "RelativeToolTip": "WildApp\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-05-18T10:02:35.412Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Documents\\Syp_Wild_app\\SYP_Wild_App_3AHIF\\Skript\\WildApp\\WildApp\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "WildApp\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\danie\\Documents\\Syp_Wild_app\\SYP_Wild_App_3AHIF\\Skript\\WildApp\\WildApp\\MainWindow.xaml.cs",
+              "RelativeToolTip": "WildApp\\MainWindow.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T10:02:31.126Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
