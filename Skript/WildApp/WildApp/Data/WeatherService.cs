@@ -27,11 +27,11 @@ namespace WildApp.Data
                 $"&current=temperature_2m,wind_speed_10m";
 
             // Antwort von der API holen und in JSON umwandeln
-            var response = await client.GetStringAsync(url);
-            using var doc = JsonDocument.Parse(response);
+            string response = await client.GetStringAsync(url);
+            using JsonDocument doc = JsonDocument.Parse(response);
 
 
-            var current = doc.RootElement.GetProperty("current"); // Ist ein Dict (Root vom Dict)
+            JsonElement current = doc.RootElement.GetProperty("current"); // Ist ein Dict (Root vom Dict)
             temperature = current.GetProperty("temperature_2m").GetDouble(); // Inhalt des Dicts bzw. Roots
             wind = current.GetProperty("wind_speed_10m").GetDouble(); // ...
         }

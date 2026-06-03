@@ -12,6 +12,7 @@ namespace WildApp.Data
         public override void DeserializeJSON(string jsonfile)
         {
             // TODO: Implementieren
+
         }
 
         public override string SerializeJSON(string jsonfile)
