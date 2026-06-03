@@ -1,119 +1,193 @@
-﻿using System.Diagnostics.Tracing;
-using System.Text;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WildApp.Data;
 using WildApp.Domain;
+using WildApp.Models;
 
 namespace WildApp
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        Controllers controller = new Controllers();
+        private readonly Controllers controller = new Controllers();
+        private Tutorial? selectedTutorial;
 
-        Dictionary<string, (double lat, double lon)> cities =
-        new Dictionary<string, (double, double)>()
-        {
-            { "Dornbirn", (47.41, 9.74) },
-            { "Wien", (48.21, 16.37) },
-            { "Graz", (47.07, 15.43) },
-            { "Linz", (48.31, 14.29) },
-            { "Salzburg", (47.80, 13.04) },
-            { "Innsbruck", (47.27, 11.40) },
-            { "Bregenz", (47.50, 9.75) },
-            { "Klagenfurt", (46.62, 14.31) },
-            { "St. Pölten", (48.21, 15.62) },
-            { "Villach", (46.61, 13.85) },
-            { "Wiener Neustadt", (47.81, 16.24) },
-            { "Feldkirch", (47.24, 9.60) },
-            { "Eisenstadt", (47.85, 16.52) }
-        };
+        private readonly Dictionary<string, (double lat, double lon)> cities =
+            new Dictionary<string, (double lat, double lon)>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "Dornbirn", (47.41, 9.74) },
+                { "Wien", (48.21, 16.37) },
+                { "Graz", (47.07, 15.43) },
+                { "Linz", (48.31, 14.29) },
+                { "Salzburg", (47.80, 13.04) },
+                { "Innsbruck", (47.27, 11.40) },
+                { "Bregenz", (47.50, 9.75) },
+                { "Klagenfurt", (46.62, 14.31) },
+                { "St. Pölten", (48.21, 15.62) },
+                { "Villach", (46.61, 13.85) },
+                { "Wiener Neustadt", (47.81, 16.24) },
+                { "Feldkirch", (47.24, 9.60) },
+                { "Eisenstadt", (47.85, 16.52) }
+            };
 
-
-        WeatherService service = new WeatherService();
         public MainWindow()
         {
             InitializeComponent();
+            LoadTutorials();
+            RefreshHistory();
+            DatabaseInfo.Text = $"Lokale Datenbank: {controller.DatabasePath}";
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private bool TryGetCoordinates(out double lat, out double lon)
         {
+            lat = 0;
+            lon = 0;
+
             string city = Stadt.Text.Trim();
 
-            if (cities.ContainsKey(city))
+            if (string.IsNullOrWhiteSpace(city))
             {
-                double lat = cities[city].lat;
-                double lon = cities[city].lon;
-
-                await service.LoadFromAPI(lat, lon);
-
-                Temperatur.Content = $"{service.GetTemperature()} °C";
+                Temperatur.Text = "Bitte Stadt eingeben";
+                Wind.Text = "Bitte Stadt eingeben";
+                return false;
             }
-            else
+
+            if (!cities.ContainsKey(city))
             {
-                Temperatur.Content = "Stadt nicht gefunden";
+                Temperatur.Text = "Stadt nicht gefunden";
+                Wind.Text = "Stadt nicht gefunden";
+                return false;
             }
+
+            lat = cities[city].lat;
+            lon = cities[city].lon;
+            return true;
         }
 
-        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        private async void Button_UpdateWeather_Click(object sender, RoutedEventArgs e)
         {
-            WeatherService service = new WeatherService();
+            if (!TryGetCoordinates(out double lat, out double lon))
+                return;
 
-            
-
-            string City = Stadt.Text.Trim();
-            if (cities.ContainsKey(City))
+            try
             {
-                // City exists in the dictionary.
-                // You can access coordinates via: cities[City].lat and cities[City].lon
-                double lat = cities[City].lat;
-                double lon = cities[City].lon;
-
-                await service.LoadFromAPI(lat, lon);
-
-                Wind.Content = $"{service.GetWind()} km/h";
-            }
-            else
-            {
-                Wind.Content = "Stadt nicht gefunden";
-            }
-        }
-
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            
-        }
-
-        private async void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            string City = Stadt.Text.Trim();
-            if (cities.ContainsKey(City))
-            {
-                // City exists in the dictionary.
-                // You can access coordinates via: cities[City].lat and cities[City].lon
-                double lat = cities[City].lat;
-                double lon = cities[City].lon;
+                Temperatur.Text = "Lädt...";
+                Wind.Text = "Lädt...";
 
                 var result = await controller.UpdateWeather(lat, lon);
-
-                Temperatur.Content = $"{result.temp} °C";
-                Wind.Content = $"{result.wind} km/h";
+                Temperatur.Text = $"{result.temp} °C";
+                Wind.Text = $"{result.wind} km/h";
             }
-            else
+            catch (Exception ex)
             {
-                Wind.Content = "Stadt nicht gefunden";
-                Temperatur.Content = "Stadt nicht gefunden";
+                Temperatur.Text = "Fehler";
+                Wind.Text = "Fehler";
+                MessageBox.Show(ex.Message, "API Fehler");
             }
+        }
+
+        private async void Button_WaterTest_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                WasserStatus.Text = "Status: Lädt...";
+
+                WaterTest result = await controller.GetRandomWaterTest();
+
+                WasserQualitaet.Text = $"Qualität: {result.WaterQuality} %";
+                WasserTemperatur.Text = $"Temperatur: {result.Temperature} °C";
+                Leitfaehigkeit.Text = $"Leitfähigkeit: {result.Conductivity}";
+                Sauerstoff.Text = $"Sauerstoff: {result.OxygenLevel} mg/L";
+                PhWert.Text = $"pH-Wert: {result.PhValue}";
+                WasserStatus.Text = $"Status: {result.GetQualityStatus()}";
+
+                RefreshHistory();
+            }
+            catch (Exception ex)
+            {
+                WasserStatus.Text = "Status: Fehler";
+                MessageBox.Show(ex.Message, "WaterTest Fehler");
+            }
+        }
+
+        private async void Button_AirTest_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                LuftStatus.Text = "Status: Lädt...";
+
+                AirTest result = await controller.GetRandomAirTest();
+
+                LuftQualitaet.Text = $"Qualität: {result.AirQuality} %";
+                LuftDichte.Text = $"Luftdichte: {result.AirDensity} kg/m³";
+                Co2.Text = $"CO2: {result.Co2Level} ppm";
+                Feinstaub.Text = $"Feinstaub: {result.FineDust} µg/m³";
+                Luftfeuchtigkeit.Text = $"Luftfeuchtigkeit: {result.Humidity} %";
+                LuftStatus.Text = $"Status: {result.GetQualityStatus()}";
+
+                RefreshHistory();
+            }
+            catch (Exception ex)
+            {
+                LuftStatus.Text = "Status: Fehler";
+                MessageBox.Show(ex.Message, "AirTest Fehler");
+            }
+        }
+
+        private void LoadTutorials()
+        {
+            CategoryBox.ItemsSource = controller.GetCategories();
+            CategoryBox.SelectedIndex = 0;
+            TutorialList.ItemsSource = controller.GetTutorials("Alle");
+        }
+
+        private void CategoryBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string? category = CategoryBox.SelectedItem as string;
+            TutorialList.ItemsSource = controller.GetTutorials(category);
+        }
+
+        private void TutorialList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            selectedTutorial = TutorialList.SelectedItem as Tutorial;
+
+            if (selectedTutorial == null)
+                return;
+
+            TutorialTitle.Text = selectedTutorial.Title;
+            TutorialCategory.Text = selectedTutorial.Category;
+            TutorialDescription.Text = selectedTutorial.Description;
+            TutorialSteps.Text = selectedTutorial.Steps;
+        }
+
+        private void Button_OpenVideo_Click(object sender, RoutedEventArgs e)
+        {
+            if (selectedTutorial == null || string.IsNullOrWhiteSpace(selectedTutorial.VideoUrl))
+            {
+                MessageBox.Show("Bitte zuerst ein Tutorial auswählen.", "Kein Tutorial ausgewählt");
+                return;
+            }
+
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = selectedTutorial.VideoUrl,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Video konnte nicht geöffnet werden");
+            }
+        }
+
+        private void RefreshHistory()
+        {
+            HistoryGrid.ItemsSource = null;
+            HistoryGrid.ItemsSource = controller.GetHistory();
         }
     }
 }
