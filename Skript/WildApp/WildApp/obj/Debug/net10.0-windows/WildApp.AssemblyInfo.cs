@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WildApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bf6a8b3e2c0a39111bcc672bff01316aefbefd82")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+99ea70a09d767ed43d4f3a542f755d9a61f7668a")]
 [assembly: System.Reflection.AssemblyProductAttribute("WildApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WildApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
