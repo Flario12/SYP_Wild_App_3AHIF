@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WildApp.Data;
 using WildApp.Models;
+using System.Net.Http;
+using System.Text.Json;
+using System.Globalization;
 
 namespace WildApp.Domain
 {
@@ -65,6 +68,34 @@ namespace WildApp.Domain
         public List<TestHistoryEntry> GetHistory()
         {
             return database.TestHistory;
+        }
+
+
+        // Hier werden noch die Koordinaten geholt
+        public async Task<(double lat, double lon)?> GetCoordinates(string city)
+        {
+            using HttpClient client = new HttpClient();
+
+            // Setzt einen User-Agent Header
+            //  Wichtig damit die Nominatim API (OpenStreetMap) Requests nicht blocken kann
+            client.DefaultRequestHeaders.Add("User-Agent", "WildApp");
+
+            // EscapeDataString sorgt dafür das Sonderzeichen korrekt enkodiert werden.
+            string url = $"https://nominatim.openstreetmap.org/search?format=json&q={Uri.EscapeDataString(city)}";
+
+            var response = await client.GetStringAsync(url);
+
+            var results = JsonSerializer.Deserialize<List<GeoResult>>(response);
+
+            if (results == null || results.Count == 0)
+                return null;
+
+
+            // InvariantCulture sorgt dafür, dass der Punkt sich als Kommatrennung verhaltet.
+            return (
+                double.Parse(results[0].lat, CultureInfo.InvariantCulture),
+                double.Parse(results[0].lon, CultureInfo.InvariantCulture)
+            );
         }
     }
 }

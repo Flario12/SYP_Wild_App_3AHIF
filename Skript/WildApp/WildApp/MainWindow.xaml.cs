@@ -14,23 +14,7 @@ namespace WildApp
         private readonly Controllers controller = new Controllers();
         private Tutorial? selectedTutorial;
 
-        private readonly Dictionary<string, (double lat, double lon)> cities =
-            new Dictionary<string, (double lat, double lon)>(StringComparer.OrdinalIgnoreCase)
-            {
-                { "Dornbirn", (47.41, 9.74) },
-                { "Wien", (48.21, 16.37) },
-                { "Graz", (47.07, 15.43) },
-                { "Linz", (48.31, 14.29) },
-                { "Salzburg", (47.80, 13.04) },
-                { "Innsbruck", (47.27, 11.40) },
-                { "Bregenz", (47.50, 9.75) },
-                { "Klagenfurt", (46.62, 14.31) },
-                { "St. Pölten", (48.21, 15.62) },
-                { "Villach", (46.61, 13.85) },
-                { "Wiener Neustadt", (47.81, 16.24) },
-                { "Feldkirch", (47.24, 9.60) },
-                { "Eisenstadt", (47.85, 16.52) }
-            };
+       
 
         public MainWindow()
         {
@@ -40,35 +24,27 @@ namespace WildApp
             DatabaseInfo.Text = $"Lokale Datenbank: {controller.DatabasePath}";
         }
 
-        private bool TryGetCoordinates(out double lat, out double lon)
+        private async Task<(bool success, double lat, double lon)> TryGetCoordinates()
         {
-            lat = 0;
-            lon = 0;
-
             string city = Stadt.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(city))
-            {
-                Temperatur.Text = "Bitte Stadt eingeben";
-                Wind.Text = "Bitte Stadt eingeben";
-                return false;
-            }
+            var coords = await controller.GetCoordinates(city);
 
-            if (!cities.ContainsKey(city))
+            if (coords == null)
             {
                 Temperatur.Text = "Stadt nicht gefunden";
                 Wind.Text = "Stadt nicht gefunden";
-                return false;
+                return (false,0,0);
             }
 
-            lat = cities[city].lat;
-            lon = cities[city].lon;
-            return true;
+            return (true, coords.Value.lat, coords.Value.lon);
         }
 
         private async void Button_UpdateWeather_Click(object sender, RoutedEventArgs e)
         {
-            if (!TryGetCoordinates(out double lat, out double lon))
+            var result = await TryGetCoordinates();
+
+            if (!result.success)
                 return;
 
             try
@@ -76,9 +52,10 @@ namespace WildApp
                 Temperatur.Text = "Lädt...";
                 Wind.Text = "Lädt...";
 
-                var result = await controller.UpdateWeather(lat, lon);
-                Temperatur.Text = $"{result.temp} °C";
-                Wind.Text = $"{result.wind} km/h";
+                var weather = await controller.UpdateWeather(result.lat, result.lon);
+
+                Temperatur.Text = $"{weather.temp} °C";
+                Wind.Text = $"{weather.wind} km/h";
             }
             catch (Exception ex)
             {

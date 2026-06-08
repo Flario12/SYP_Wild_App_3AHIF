@@ -13,18 +13,7 @@ namespace WildApp.Data
 
         public override void DeserializeJSON(string json)
         {
-            WaterTest? data = JsonSerializer.Deserialize<WaterTest>(json);
-
-            if (data == null)
-            {
-                throw new Exception("JSON konnte nicht gelesen werden.");
-            }
-
-            WaterQuality = data.WaterQuality;
-            Temperature = data.Temperature;
-            Conductivity = data.Conductivity;
-            OxygenLevel = data.OxygenLevel;
-            PhValue = data.PhValue;
+            // TODO: Implementieren
         }
 
         public override string SerializeJSON(string jsonfile)
